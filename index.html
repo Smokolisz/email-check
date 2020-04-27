@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        <meta charset="utf-8">
+        <title>Sprawdzanie dostępności email</title>
+
+        <style>
+            body {
+                margin:0;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            .container {
+                width:700px;
+                position:absolute;
+                top:50%; left:50%;
+                transform: translate(-50%, -50%);
+                border:2px solid #dfdfdf;
+                border-radius: 30px;
+                padding:50px;
+            }
+
+            input {
+                font-size:30px;
+                padding:20px;
+                width:100%;
+                display:block;
+                border-radius: 30px;
+            }
+
+            .good {
+                border:3px solid green;
+                background-color:rgb(172, 230, 172);
+            }
+
+            .bad {
+                border:3px solid red;
+                background-color:rgb(197, 137, 137);
+            }
+
+            p {
+                color:gray;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Sprawdź czy email jest zajęty</h1>
+            <input type="email" id="email" placeholder="Podaj email...">
+
+            <p>(DO TESTU) Zajęte emaile: test@test.pl, a@b.pl, adam@wp.pl, kamil@onet.pl, fx@gmail.com</p>
+        </div>
+
+        <script>
+        let input = document.getElementById("email");
+        input.addEventListener("keyup", function() {
+
+            if(input.value != "") {
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", 'api.php', true);
+
+                //Send the proper header information along with the request
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+                xhr.onreadystatechange = function(data) { // Call a function when the state changes.
+                    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                        // Request finished. Do processing here.
+                        console.log(xhr.response);
+
+                        if(xhr.response == "True") {
+                            input.classList.add("good");
+                            input.classList.remove("bad");
+                        } else {
+                            input.classList.remove("good");
+                            input.classList.add("bad");
+                        }
+                    }
+                }
+                xhr.send("email="+input.value);
+
+            } else {
+                input.classList.remove("good");
+                input.classList.remove("bad");
+            }
+
+        });
+        </script>
+    </body>
+</html>
